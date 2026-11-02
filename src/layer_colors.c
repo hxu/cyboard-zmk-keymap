@@ -19,6 +19,11 @@ BUILD_ASSERT(ZMK_KEYMAP_LAYERS_LEN == ARRAY_SIZE(layer_hues),
 static void update_layer_color(struct k_work *work) {
     zmk_keymap_layer_index_t index = zmk_keymap_highest_layer_active();
     zmk_keymap_layer_id_t layer = zmk_keymap_layer_index_to_id(index);
+    // Studio can remove the default layer, leaving no valid active layer.
+    if (layer == ZMK_KEYMAP_LAYER_ID_INVAL) {
+        return;
+    }
+
     struct zmk_behavior_binding_event event = {.timestamp = k_uptime_get()};
     struct zmk_behavior_binding bindings[] = {
         {.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(rgb_ug)),

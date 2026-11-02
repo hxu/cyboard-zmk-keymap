@@ -18,7 +18,7 @@ Its bindings are `&to 1`, `&to 2`, and `&to 0`. Keep these bindings when editing
 the layers in Studio, so you can always leave the Custom layer. The other three
 former momentary-layer thumb keys are unassigned and can be configured in Studio.
 
-The firmware sets solid RGB colors at 25% brightness. It updates the color on
+The firmware sets solid RGB colors with brightness setting 25. It updates the color on
 layer changes, after saved settings load at startup, and when it receives the
 right half's battery report. Colors follow the layer IDs even if you rename or
 reorder layers in Studio. Color changes require a firmware rebuild; normal key
