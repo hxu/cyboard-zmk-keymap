@@ -1,6 +1,49 @@
 # ZMK Configuration Template
 Wireless Cyboard keyboard configuration repository template for using ZMK firmware. [Instructions for use are located on our documentation site](https://docs.cyboard.digital/user-manual/quick-start/configure-layout).
 
+## Personal Imprint layout
+
+`config/imprint.keymap` selects the Imprint with a full function row and full
+bottom row. It has three layers:
+
+| Studio layer | ZMK layer ID | Layout | RGB color |
+| --- | --- | --- | --- |
+| Qwerty | 0 | Qwerty | Red |
+| Colemak-DH | 1 | [Colemak-DH matrix letters](https://colemakmods.github.io/mod-dh/keyboards.html) | Blue |
+| Custom | 2 | Unassigned except for the cycle key | Green |
+
+Tap the innermost key on the lower left thumb arc to cycle through these layers.
+This is the former `&mo 2` key, two positions after `LGUI` in the last keymap row.
+Its bindings are `&to 1`, `&to 2`, and `&to 0`. Keep these bindings when editing
+the layers in Studio, so you can always leave the Custom layer. The other three
+former momentary-layer thumb keys are unassigned and can be configured in Studio.
+
+The firmware sets solid RGB colors with brightness setting 25. It updates the color on
+layer changes, after saved settings load at startup, and when it receives the
+right half's battery report. Colors follow the layer IDs even if you rename or
+reorder layers in Studio. Color changes require a firmware rebuild; normal key
+changes can still be made in Studio. The Custom layer uses `&none`, so its empty
+keys do not fall through to Qwerty. The left trackball keeps its scrolling setup.
+
+Flash both halves from the same successful GitHub Actions build. If the keyboard
+already has a keymap saved by Studio, save a copy of those edits and reset the
+keymap to the firmware defaults in Studio to load these three layers. A normal
+reflash preserves the Studio keymap and does not replace it with these defaults.
+
+After flashing, check that each tap cycles red/Qwerty, blue/Colemak-DH,
+green/Custom, and back to red/Qwerty. Check that Custom produces no key output
+until configured, but its cycle key still works. Restart the keyboard from blue
+or green and check that it returns to red/Qwerty. Also restart the right half
+while Colemak-DH or Custom is active and check its color after it reconnects.
+Unlock Studio with the existing A-position + F-position hold combo to configure
+Custom. The combo uses physical positions and also works on the blank layer.
+
+Run the keymap checks with:
+
+```sh
+uv run --no-project python -m unittest discover -s tests -v
+```
+
 > **Already have a copy of this template from before July 2026?** The board and
 > layout definitions were reorganized in July 2026, and older copies track the
 > moving `main` branch — so a rebuild can silently break your keymap (most often

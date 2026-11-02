@@ -1,0 +1,3 @@
+if(CONFIG_ZMK_RGB_UNDERGLOW AND CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+  target_sources(app PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src/layer_colors.c)
+endif()
