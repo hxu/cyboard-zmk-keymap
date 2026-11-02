@@ -1,5 +1,11 @@
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
+  keymap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m unittest discover -s tests -v
+
   build:
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3.0
