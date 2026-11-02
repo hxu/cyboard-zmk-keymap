@@ -9,7 +9,7 @@ bottom row. It has three layers:
 | Studio layer | ZMK layer ID | Layout | RGB color |
 | --- | --- | --- | --- |
 | Qwerty | 0 | Qwerty | Red |
-| Colemak | 1 | Standard Colemak letters | Blue |
+| Colemak-DH | 1 | [Colemak-DH matrix letters](https://colemakmods.github.io/mod-dh/keyboards.html) | Blue |
 | Custom | 2 | Unassigned except for the cycle key | Green |
 
 Tap the innermost key on the lower left thumb arc to cycle through these layers.
@@ -30,11 +30,11 @@ already has a keymap saved by Studio, save a copy of those edits and reset the
 keymap to the firmware defaults in Studio to load these three layers. A normal
 reflash preserves the Studio keymap and does not replace it with these defaults.
 
-After flashing, check that each tap cycles red/Qwerty, blue/Colemak,
+After flashing, check that each tap cycles red/Qwerty, blue/Colemak-DH,
 green/Custom, and back to red/Qwerty. Check that Custom produces no key output
 until configured, but its cycle key still works. Restart the keyboard from blue
 or green and check that it returns to red/Qwerty. Also restart the right half
-while Colemak or Custom is active and check its color after it reconnects.
+while Colemak-DH or Custom is active and check its color after it reconnects.
 Unlock Studio with the existing A-position + F-position hold combo to configure
 Custom. The combo uses physical positions and also works on the blank layer.
 

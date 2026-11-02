@@ -37,16 +37,16 @@ class ImprintKeymapTest(unittest.TestCase):
             ],
         )
 
-    def test_standard_colemak_letters(self):
+    def test_colemak_dh_letters(self):
         self.assertEqual(
             self.layers[1][24:60],
             [
-                "&kp TAB", "&kp Q", "&kp W", "&kp F", "&kp P", "&kp G",
+                "&kp TAB", "&kp Q", "&kp W", "&kp F", "&kp P", "&kp B",
                 "&kp J", "&kp L", "&kp U", "&kp Y", "&kp SEMI", "&kp BSLH",
-                "&kp LCTRL", "&kp A", "&kp R", "&kp S", "&kp T", "&kp D",
-                "&kp H", "&kp N", "&kp E", "&kp I", "&kp O", "&kp SQT",
-                "&kp LSHFT", "&kp Z", "&kp X", "&kp C", "&kp V", "&kp B",
-                "&kp K", "&kp M", "&kp COMMA", "&kp DOT", "&kp FSLH", "&kp RSHFT",
+                "&kp LCTRL", "&kp A", "&kp R", "&kp S", "&kp T", "&kp G",
+                "&kp M", "&kp N", "&kp E", "&kp I", "&kp O", "&kp SQT",
+                "&kp LSHFT", "&kp Z", "&kp X", "&kp C", "&kp D", "&kp V",
+                "&kp K", "&kp H", "&kp COMMA", "&kp DOT", "&kp FSLH", "&kp RSHFT",
             ],
         )
 
