@@ -10,13 +10,30 @@ bottom row. It has three layers:
 | --- | --- | --- | --- |
 | Qwerty | 0 | Qwerty | Red |
 | Colemak-DH | 1 | [Colemak-DH matrix letters](https://colemakmods.github.io/mod-dh/keyboards.html) | Blue |
-| Custom | 2 | Unassigned except for the cycle key | Green |
+| Custom | 2 | Unassigned except for the layer and Bluetooth cycle keys | Green |
 
 Tap the innermost key on the lower left thumb arc to cycle through these layers.
 This is the former `&mo 2` key, two positions after `LGUI` in the last keymap row.
 Its bindings are `&to 1`, `&to 2`, and `&to 0`. Keep these bindings when editing
-the layers in Studio, so you can always leave the Custom layer. The other three
-former momentary-layer thumb keys are unassigned and can be configured in Studio.
+the layers in Studio, so you can always leave the Custom layer.
+
+The key immediately to its left (the middle key on the lower left thumb arc,
+binding position 77, counting from zero) cycles Bluetooth profiles with
+`&bt BT_NXT` on all three layers. It cycles profiles 1 → 2 → 3 → 4 → 5 → 1
+(ZMK IDs 0–4). An unused profile advertises for pairing; a paired profile
+selects its host. The left-half config explicitly reserves six connections
+and bonds: five hosts plus the right half. Five is the configured profile
+count, not a hardware maximum; increasing it requires a rebuild and memory
+validation. USB output takes precedence while connected by USB, so test host
+switching with the left USB cable disconnected.
+
+The remaining two former momentary-layer thumb keys are unassigned. The
+Bluetooth key currently retains the layer color. Independent profile colors
+are not implemented: the public Imprint board definition exposes an addressable
+LED strip with a placeholder length of 150, but no mapping between LED indices
+and physical keys. Binding position 77 is **not** an LED index. A verified LED
+index for this key (or hardware calibration) is needed before implementing its
+indicator without changing other keys' colors.
 
 The firmware sets solid RGB colors with brightness setting 25. It updates the color on
 layer changes, after saved settings load at startup, and when it receives the
@@ -38,6 +55,43 @@ while Colemak-DH or Custom is active and check its color after it reconnects.
 Unlock Studio with the existing A-position + F-position hold combo to configure
 Custom. The combo uses physical positions and also works on the blank layer.
 
+After updating this keymap, preserve any Studio customizations before using
+**Restore Stock Settings** to load the new Bluetooth binding. Alternatively,
+assign Bluetooth → Next Profile to the middle lower-left thumb key on each
+layer directly in Studio. Test all five profiles and wraparound on every layer,
+including Custom, and confirm the layer-cycle key still works independently.
+
+## Cyboard trackball configuration extension
+
+This repository builds upstream ZMK with Studio **keymap editing** support.
+It does not include Cyboard's trackball-configuration extension. The warning
+in Cyboard Studio is independent of saved keymaps and cannot be fixed by
+restoring stock settings or enabling `CONFIG_ZMK_STUDIO` again. Trackball
+movement and the left ball's compiled-in scrolling configuration still use
+the public driver.
+
+The official [imprint-v2026.09.27 release](https://github.com/Cyboard-DigitalTailor/cyboard-imprint-zmk-studio-firmware/releases/tag/imprint-v2026.09.27)
+includes that extension. Its published
+[provenance.txt](https://github.com/Cyboard-DigitalTailor/cyboard-imprint-zmk-studio-firmware/releases/download/imprint-v2026.09.27/provenance.txt)
+lists these sources:
+
+| Component | Release revision |
+| --- | --- |
+| `zmk-private` (`develop`) | `83b72af1` |
+| `zmk-keyboards` (`main`) | `522529e` |
+| `zmk-pmw3610-driver-private` (`feature/axis-runtime-config`) | `ba040ba` |
+| `zmk-studio-messages` | `8b1bd9e` |
+| `zmk-environment` (`main`) | `d29f093` |
+
+The private ZMK and trackball driver sources are unavailable to the current
+GitHub account. Public `zmk` and `zmk-pmw3610-driver` branches are not substitutes
+for these extensions. Migrating this custom build requires access to the
+vendor's source stack and its matching Studio protocol/build configuration.
+Until then, the [official firmware](https://docs.cyboard.digital/studio-firmware-update)
+provides trackball configuration, but does not compile this repo's custom RGB
+indicator code. Keep the current pins until a compatible migration can be built
+and verified on both halves.
+
 Run the keymap checks with:
 
 ```sh
@@ -55,7 +109,7 @@ uv run --no-project python -m unittest discover -s tests -v
 ## Pinned versions
 `config/west.yml` pins two projects to fixed releases so your firmware is reproducible and cannot change under you:
 
-- **`zmk`** → the latest **stable** ZMK release (currently `v0.3.0`), matching the firmware stack behind [studio.cyboard.digital](https://studio.cyboard.digital).
+- **`zmk`** → upstream ZMK `v0.3.0`, supporting Studio keymap editing. This is not the private firmware stack that provides Cyboard Studio trackball configuration; see above.
 - **`zmk-keyboards`** → a tagged release (currently `v2026.07`) of the Cyboard board, shield, and physical-layout definitions. Pinning this is what keeps your keymap working: the physical layouts — key positions, layout names, and the order bindings appear in — are frozen at that tag, so a later change on `zmk-keyboards` `main` cannot shift them under your keymap and silently break keys (e.g. a dead thumb cluster after a rebuild).
 
 Version bumps are deliberate: when you want newer boards, layouts, or a newer stable ZMK, edit `config/west.yml` (and, for a new ZMK, the matching tag in `.github/workflows/build.yml`), push, and let CI prove the build before you flash. The [zmk-keyboards releases](https://github.com/Cyboard-DigitalTailor/zmk-keyboards/releases) page lists what each tag contains.
