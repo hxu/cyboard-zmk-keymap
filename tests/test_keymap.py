@@ -30,7 +30,7 @@ class ImprintKeymapTest(unittest.TestCase):
             [
                 "&kp TAB", "&kp Q", "&kp W", "&kp E", "&kp R", "&kp T",
                 "&kp Y", "&kp U", "&kp I", "&kp O", "&kp P", "&kp BSLH",
-                "&kp LCTRL", "&kp A", "&kp S", "&kp D", "&kp F", "&kp G",
+                "&kp CAPS", "&kp A", "&kp S", "&kp D", "&kp F", "&kp G",
                 "&kp H", "&kp J", "&kp K", "&kp L", "&kp SEMI", "&kp SQT",
                 "&kp LSHFT", "&kp Z", "&kp X", "&kp C", "&kp V", "&kp B",
                 "&kp N", "&kp M", "&kp COMMA", "&kp DOT", "&kp FSLH", "&kp RSHFT",
@@ -43,16 +43,40 @@ class ImprintKeymapTest(unittest.TestCase):
             [
                 "&kp TAB", "&kp Q", "&kp W", "&kp F", "&kp P", "&kp B",
                 "&kp J", "&kp L", "&kp U", "&kp Y", "&kp SEMI", "&kp BSLH",
-                "&kp LCTRL", "&kp A", "&kp R", "&kp S", "&kp T", "&kp G",
+                "&kp CAPS", "&kp A", "&kp R", "&kp S", "&kp T", "&kp G",
                 "&kp M", "&kp N", "&kp E", "&kp I", "&kp O", "&kp SQT",
                 "&kp LSHFT", "&kp Z", "&kp X", "&kp C", "&kp D", "&kp V",
                 "&kp K", "&kp H", "&kp COMMA", "&kp DOT", "&kp FSLH", "&kp RSHFT",
             ],
         )
 
-    def test_custom_layer_is_unassigned_except_for_cycle_keys(self):
-        self.assertEqual(self.layers[2][:77], ["&none"] * 77)
-        self.assertEqual(self.layers[2][79:], ["&none"] * 3)
+    def test_custom_letters_stay_blank_and_controls_match_qwerty(self):
+        letter_positions = set(range(25, 35)) | set(range(37, 46)) | set(range(49, 56))
+        for position in range(82):
+            if position in letter_positions:
+                self.assertEqual(self.layers[2][position], "&none")
+            elif position != 77:  # Each layer's cycle key has its own target.
+                self.assertEqual(self.layers[2][position], self.layers[0][position])
+
+    def test_confirmed_controls_on_every_layer(self):
+        for layer in self.layers:
+            self.assertEqual([layer[i] for i in [0, 12, 24, 36, 48]],
+                             ["&kp ESC", "&kp GRAVE", "&kp TAB", "&kp CAPS", "&kp LSHFT"])
+            self.assertEqual(layer[60:70], [
+                "&kp LCTRL", "&kp LALT", "&kp DOWN", "&kp UP", "&none",
+                "&kp EQUAL", "&kp LEFT", "&kp RIGHT", "&kp LBKT", "&kp RBKT",
+            ])
+            self.assertEqual(layer[70:77], [
+                "&kp RET", "&kp DEL", "&none", "&kp HOME", "&kp BSPC", "&kp SPACE", "&kp LGUI",
+            ])
+            self.assertEqual(layer[79:82], ["&kp END", "&mkp LCLK", "&mkp RCLK"])
+
+    def test_left_trackball_scroll_sensitivity_is_halved(self):
+        keymap = (ROOT / "config/imprint.keymap").read_text()
+        listener = keymap.split("&trackball_central_listener", 1)[1]
+        self.assertIn("<&zip_xy_scaler 1 6>", listener)
+        self.assertIn("<&zip_xy_to_scroll_mapper>", listener)
+        self.assertIn("<&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>", listener)
 
     def test_bluetooth_cycle_is_immediately_right_of_layer_cycle_on_every_layer(self):
         self.assertEqual([layer[78] for layer in self.layers], ["&bt BT_NXT"] * 3)

@@ -10,7 +10,24 @@ bottom row. It has three layers:
 | --- | --- | --- | --- |
 | Qwerty | 0 | Qwerty | Red |
 | Colemak-DH | 1 | [Colemak-DH matrix letters](https://colemakmods.github.io/mod-dh/keyboards.html) | Blue |
-| Custom | 2 | Unassigned except for the layer and Bluetooth cycle keys | Green |
+| Custom | 2 | Blank letter positions with shared controls | Green |
+
+All three layers share the following controls (each row reads left to right):
+
+| Area | Bindings |
+| --- | --- |
+| Left outer column, top to bottom | Esc, grave/tilde, Tab, Caps Lock, Shift, Ctrl |
+| Left bottom row | Ctrl, Alt/Option, Down, Up, unassigned |
+| Right bottom row | Equals, Left, Right, Left bracket, Right bracket |
+| Left upper thumb arc | Enter, Delete (forward), unassigned Function key |
+| Left lower thumb arc | Command/GUI, layer cycle, Bluetooth cycle |
+| Right upper thumb arc | Home, Backspace, Space |
+| Right lower thumb arc | End, left mouse button, right mouse button |
+
+Custom keeps its 26 letter positions unassigned, with the Qwerty layer's numbers,
+function keys, punctuation, modifiers, navigation, and thumb controls. The
+Function thumb key and the last key of the left bottom row use `&none` on all
+layers, so neither falls through to a lower layer.
 
 Tap the middle key on the lower left thumb arc to cycle through these layers.
 This is the former `&mo 1` key, immediately after `LGUI` in the last keymap row
@@ -28,7 +45,6 @@ count, not a hardware maximum; increasing it requires a rebuild and memory
 validation. USB output takes precedence while connected by USB, so test host
 switching with the left USB cable disconnected.
 
-The remaining two former momentary-layer thumb keys are unassigned.
 Switching Bluetooth profiles briefly colors the entire keyboard for 1.5 seconds:
 
 | Host profile | ZMK ID | Flash color |
@@ -52,7 +68,9 @@ layer changes, after saved settings load at startup, and when it receives the
 right half's battery report. Colors follow the layer IDs even if you rename or
 reorder layers in Studio. Color changes require a firmware rebuild; normal key
 changes can still be made in Studio. The Custom layer uses `&none`, so its empty
-keys do not fall through to Qwerty. The left trackball keeps its scrolling setup.
+keys do not fall through to Qwerty. The left trackball keeps its scrolling setup,
+with its scale reduced from 1/3 to 1/6 for half the previous sensitivity; the right
+trackball's pointer sensitivity is unchanged.
 
 Flash both halves from the same successful GitHub Actions build. If the keyboard
 already has a keymap saved by Studio, save a copy of those edits and reset the
@@ -60,8 +78,8 @@ keymap to the firmware defaults in Studio to load these three layers. A normal
 reflash preserves the Studio keymap and does not replace it with these defaults.
 
 After flashing, check that each tap cycles red/Qwerty, blue/Colemak-DH,
-green/Custom, and back to red/Qwerty. Check that Custom produces no key output
-until configured, but its cycle key still works. Restart the keyboard from blue
+green/Custom, and back to red/Qwerty. Check that Custom's letters produce no key
+output, but its shared controls and cycle keys still work. Restart the keyboard from blue
 or green and check that it returns to red/Qwerty. Also restart the right half
 while Colemak-DH or Custom is active and check its color after it reconnects.
 Unlock Studio with the existing A-position + F-position hold combo to configure
@@ -78,6 +96,10 @@ Also test quick repeated presses, changing layers during the flash, and a host
 reconnect without a new profile selection. The flash works over USB even though
 USB remains the preferred output. No Studio reset is needed for this lighting
 update if your saved keymap already has the Bluetooth and layer cycle bindings.
+For the revised keycap layout, preserve your Studio edits and use Restore Stock
+Settings after flashing, or apply the new bindings to every layer in Studio.
+Verify forward Delete versus Backspace, the unassigned keys, both mouse buttons
+(including click-and-drag), the arrow keys, and the slower left-ball scrolling.
 
 ## Cyboard trackball configuration extension
 
