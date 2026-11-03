@@ -28,13 +28,24 @@ count, not a hardware maximum; increasing it requires a rebuild and memory
 validation. USB output takes precedence while connected by USB, so test host
 switching with the left USB cable disconnected.
 
-The remaining two former momentary-layer thumb keys are unassigned. The
-Bluetooth key currently retains the layer color. Independent profile colors
-are not implemented: the public Imprint board definition exposes an addressable
-LED strip with a placeholder length of 150, but no mapping between LED indices
-and physical keys. Binding position 78 is **not** an LED index. A verified LED
-index for this key (or hardware calibration) is needed before implementing its
-indicator without changing other keys' colors.
+The remaining two former momentary-layer thumb keys are unassigned.
+Switching Bluetooth profiles briefly colors the entire keyboard for 1.5 seconds:
+
+| Host profile | ZMK ID | Flash color |
+| --- | --- | --- |
+| 1 | 0 | Cyan |
+| 2 | 1 | Magenta |
+| 3 | 2 | Yellow |
+| 4 | 3 | Orange |
+| 5 | 4 | White |
+
+These colors are separate from the red, blue, and green layer colors. After the
+flash, lighting returns to the currently active layer. Rapid profile changes
+restart the timer with the latest profile's color. Layer changes during a flash
+take effect when the flash ends. Reconnecting to the same host does not trigger
+or extend the flash. The saved Bluetooth profile loads without flashing at boot.
+The indication is sent to both halves through the existing split RGB behaviors;
+it shows the selected profile, not confirmation of a connected host.
 
 The firmware sets solid RGB colors with brightness setting 25. It updates the color on
 layer changes, after saved settings load at startup, and when it receives the
@@ -62,6 +73,11 @@ assign Bluetooth → Next Profile to the innermost lower-left thumb key and Move
 to Layer → 1 / 2 / 0 to the middle lower-left thumb key on Qwerty / Colemak-DH /
 Custom, respectively, directly in Studio. Test all five profiles and wraparound on every layer,
 including Custom, and confirm the layer-cycle key still works independently.
+Check each profile's flash color and return to the layer color after 1.5 seconds.
+Also test quick repeated presses, changing layers during the flash, and a host
+reconnect without a new profile selection. The flash works over USB even though
+USB remains the preferred output. No Studio reset is needed for this lighting
+update if your saved keymap already has the Bluetooth and layer cycle bindings.
 
 ## Cyboard trackball configuration extension
 
@@ -99,6 +115,10 @@ Run the keymap checks with:
 ```sh
 uv run --no-project python -m unittest discover -s tests -v
 ```
+
+The flash timing and palette test compiles C code, so it needs a host C compiler.
+If one is unavailable, run the same command with `uv run --with ziglang` instead
+of `uv run`.
 
 > **Already have a copy of this template from before July 2026?** The board and
 > layout definitions were reorganized in July 2026, and older copies track the
