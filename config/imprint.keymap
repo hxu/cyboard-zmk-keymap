@@ -20,7 +20,7 @@
 &kp LSHFT  &kp Z   &kp X     &kp C     &kp V     &kp B               &kp N      &kp M     &kp COMMA  &kp DOT   &kp FSLH  &kp RSHFT
 &trans     &trans  &kp LGUI  &kp LALT  &trans                                   &trans    &kp LBKT   &kp RBKT  &trans    &trans
                                        &kp RET   &kp DEL  &kp ESC    &kp GRAVE  &kp BSPC  &kp SPACE
-                                       &kp LGUI  &bt BT_NXT  &to 1    &kp CAPS   &none     &none
+                                       &kp LGUI  &to 1    &bt BT_NXT  &kp CAPS   &none     &none
             >;
         };
 
@@ -34,7 +34,7 @@
 &kp LSHFT  &kp Z   &kp X     &kp C     &kp D     &kp V               &kp K      &kp H     &kp COMMA  &kp DOT   &kp FSLH  &kp RSHFT
 &trans     &trans  &kp LGUI  &kp LALT  &trans                                   &trans    &kp LBKT   &kp RBKT  &trans    &trans
                                        &kp RET   &kp DEL  &kp ESC    &kp GRAVE  &kp BSPC  &kp SPACE
-                                       &kp LGUI  &bt BT_NXT  &to 2    &kp CAPS   &none     &none
+                                       &kp LGUI  &to 2    &bt BT_NXT  &kp CAPS   &none     &none
             >;
         };
 
@@ -48,7 +48,7 @@
 &none  &none  &none  &none  &none  &none            &none  &none  &none  &none  &none  &none
 &none  &none  &none  &none  &none                            &none  &none  &none  &none  &none
                                   &none  &none  &none    &none  &none  &none
-                                  &none  &bt BT_NXT  &to 0    &none  &none  &none
+                                  &none  &to 0    &bt BT_NXT  &none  &none  &none
             >;
         };
     };

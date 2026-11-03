@@ -12,13 +12,14 @@ bottom row. It has three layers:
 | Colemak-DH | 1 | [Colemak-DH matrix letters](https://colemakmods.github.io/mod-dh/keyboards.html) | Blue |
 | Custom | 2 | Unassigned except for the layer and Bluetooth cycle keys | Green |
 
-Tap the innermost key on the lower left thumb arc to cycle through these layers.
-This is the former `&mo 2` key, two positions after `LGUI` in the last keymap row.
+Tap the middle key on the lower left thumb arc to cycle through these layers.
+This is the former `&mo 1` key, immediately after `LGUI` in the last keymap row
+(binding position 77, counting from zero).
 Its bindings are `&to 1`, `&to 2`, and `&to 0`. Keep these bindings when editing
 the layers in Studio, so you can always leave the Custom layer.
 
-The key immediately to its left (the middle key on the lower left thumb arc,
-binding position 77, counting from zero) cycles Bluetooth profiles with
+The key immediately to its right (the innermost key on the lower left thumb arc,
+binding position 78, counting from zero) cycles Bluetooth profiles with
 `&bt BT_NXT` on all three layers. It cycles profiles 1 → 2 → 3 → 4 → 5 → 1
 (ZMK IDs 0–4). An unused profile advertises for pairing; a paired profile
 selects its host. The left-half config explicitly reserves six connections
@@ -31,7 +32,7 @@ The remaining two former momentary-layer thumb keys are unassigned. The
 Bluetooth key currently retains the layer color. Independent profile colors
 are not implemented: the public Imprint board definition exposes an addressable
 LED strip with a placeholder length of 150, but no mapping between LED indices
-and physical keys. Binding position 77 is **not** an LED index. A verified LED
+and physical keys. Binding position 78 is **not** an LED index. A verified LED
 index for this key (or hardware calibration) is needed before implementing its
 indicator without changing other keys' colors.
 
@@ -57,8 +58,9 @@ Custom. The combo uses physical positions and also works on the blank layer.
 
 After updating this keymap, preserve any Studio customizations before using
 **Restore Stock Settings** to load the new Bluetooth binding. Alternatively,
-assign Bluetooth → Next Profile to the middle lower-left thumb key on each
-layer directly in Studio. Test all five profiles and wraparound on every layer,
+assign Bluetooth → Next Profile to the innermost lower-left thumb key and Move
+to Layer → 1 / 2 / 0 to the middle lower-left thumb key on Qwerty / Colemak-DH /
+Custom, respectively, directly in Studio. Test all five profiles and wraparound on every layer,
 including Custom, and confirm the layer-cycle key still works independently.
 
 ## Cyboard trackball configuration extension

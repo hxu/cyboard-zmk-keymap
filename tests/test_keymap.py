@@ -54,8 +54,8 @@ class ImprintKeymapTest(unittest.TestCase):
         self.assertEqual(self.layers[2][:77], ["&none"] * 77)
         self.assertEqual(self.layers[2][79:], ["&none"] * 3)
 
-    def test_bluetooth_cycle_is_immediately_left_of_layer_cycle_on_every_layer(self):
-        self.assertEqual([layer[77] for layer in self.layers], ["&bt BT_NXT"] * 3)
+    def test_bluetooth_cycle_is_immediately_right_of_layer_cycle_on_every_layer(self):
+        self.assertEqual([layer[78] for layer in self.layers], ["&bt BT_NXT"] * 3)
 
     def test_five_host_profiles_reserve_a_slot_for_the_peripheral(self):
         central = (ROOT / "config/imprint_left.conf").read_text()
@@ -65,8 +65,8 @@ class ImprintKeymapTest(unittest.TestCase):
         self.assertNotIn("CONFIG_BT_MAX_CONN", shared)
         self.assertNotIn("CONFIG_BT_MAX_PAIRED", shared)
 
-    def test_left_inner_thumb_cycles_and_other_thumbs_do_not_change_layers(self):
-        self.assertEqual([layer[78] for layer in self.layers], ["&to 1", "&to 2", "&to 0"])
+    def test_left_middle_thumb_cycles_and_other_thumbs_do_not_change_layers(self):
+        self.assertEqual([layer[77] for layer in self.layers], ["&to 1", "&to 2", "&to 0"])
         for layer in self.layers:
             self.assertFalse(any(binding.startswith(("&mo ", "&tog ")) for binding in layer))
 
