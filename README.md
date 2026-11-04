@@ -45,6 +45,11 @@ count, not a hardware maximum; increasing it requires a rebuild and memory
 validation. USB output takes precedence while connected by USB, so test host
 switching with the left USB cable disconnected.
 
+The left half also exposes the right half's battery level through an additional
+Bluetooth Battery Service. Both halves must be on and connected. The normal
+Bluetooth battery percentage is the left half's level; reading both values may
+require a BLE inspection app because host support for multiple batteries varies.
+
 Switching Bluetooth profiles briefly colors the entire keyboard for 1.5 seconds:
 
 | Host profile | ZMK ID | Flash color |
@@ -65,8 +70,13 @@ it shows the selected profile, not confirmation of a connected host.
 
 The firmware sets solid RGB colors with brightness setting 25. It updates the color on
 layer changes, after saved settings load at startup, and when it receives the
-right half's battery report. Colors follow the layer IDs even if you rename or
-reorder layers in Studio. Color changes require a firmware rebuild; normal key
+right half's battery report. Each half turns its lighting off after 30 seconds
+without input. ZMK restores the previous on/off state when activity resumes.
+Color updates and profile flashes preserve that state, so they cannot turn
+idle or manually disabled lighting back on. Lighting starts on again after a
+restart or deep-sleep wake, even if idle shutoff saved an off state.
+Colors follow the layer IDs even if you rename or reorder layers in Studio.
+Color changes require a firmware rebuild; normal key
 changes can still be made in Studio. The Custom layer uses `&none`, so its empty
 keys do not fall through to Qwerty. The left trackball keeps its scrolling setup,
 with its scale reduced from 1/3 to 1/6 for half the previous sensitivity; the right
@@ -84,6 +94,14 @@ or green and check that it returns to red/Qwerty. Also restart the right half
 while Colemak-DH or Custom is active and check its color after it reconnects.
 Unlock Studio with the existing A-position + F-position hold combo to configure
 Custom. The combo uses physical positions and also works on the blank layer.
+
+With both halves on battery, leave them untouched for at least 30 seconds and
+check that both lights go out. Press a key on each half to check that its light
+returns with the current layer color. Turn RGB off manually and check that layer
+changes, profile changes, and right-half battery updates do not turn it back on.
+After at least 15 minutes without input, press a key on each half and check that
+lighting returns after waking from deep sleep. Use a BLE inspection app to read
+the additional Battery Service while both halves are connected.
 
 After updating this keymap, preserve any Studio customizations before using
 **Restore Stock Settings** to load the new Bluetooth binding. Alternatively,
@@ -138,9 +156,12 @@ Run the keymap checks with:
 uv run --no-project python -m unittest discover -s tests -v
 ```
 
-The flash timing and palette test compiles C code, so it needs a host C compiler.
+The flash timing and lighting callback tests compile C code, so they need a host C compiler.
 If one is unavailable, run the same command with `uv run --with ziglang` instead
 of `uv run`.
+The lighting callback test compiles both half roles with mocked Zephyr and ZMK
+boundaries; it checks startup lighting and that color updates do not force RGB on.
+These host tests do not verify hardware sleep or Bluetooth battery reporting.
 
 > **Already have a copy of this template from before July 2026?** The board and
 > layout definitions were reorganized in July 2026, and older copies track the
