@@ -1,7 +1,9 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/settings/settings.h>
+#include <zmk/rgb_underglow.h>
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 #include <dt-bindings/zmk/rgb.h>
 #include <zmk/behavior.h>
 #include <zmk/ble.h>
@@ -53,7 +55,6 @@ static void update_layer_color(struct k_work *work) {
          .param1 = RGB_COLOR_HSB_CMD,
          .param2 = RGB_COLOR_HSB_VAL(color.hue, color.saturation,
                                     CONFIG_ZMK_RGB_UNDERGLOW_BRT_START)},
-        {.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(rgb_ug)), .param1 = RGB_ON_CMD},
     };
 
     for (size_t i = 0; i < ARRAY_SIZE(bindings); i++) {
@@ -93,8 +94,10 @@ ZMK_LISTENER(layer_colors, layer_color_listener);
 ZMK_SUBSCRIPTION(layer_colors, zmk_layer_state_changed);
 ZMK_SUBSCRIPTION(layer_colors, zmk_peripheral_battery_state_changed);
 ZMK_SUBSCRIPTION(layer_colors, zmk_ble_active_profile_changed);
+#endif
 
 static int layer_color_settings_loaded(void) {
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     // Saved RGB settings load in main(), after SYS_INIT. Reapply the active layer
     // here so a saved blue or green color cannot override Qwerty's startup red.
     // Establish the restored profile without flashing a startup indication.
@@ -102,7 +105,10 @@ static int layer_color_settings_loaded(void) {
     flash = (struct profile_flash){.profile = zmk_ble_active_profile_index()};
     k_spin_unlock(&flash_lock, key);
     k_work_reschedule(&layer_color_work, K_NO_WAIT);
-    return 0;
+#endif
+    // Idle shutoff saves RGB off. Restore startup lighting on each half after
+    // settings load, including when booting again to wake from deep sleep.
+    return zmk_rgb_underglow_on();
 }
 
 SETTINGS_STATIC_HANDLER_DEFINE(layer_colors, "layer_colors", NULL, NULL,
