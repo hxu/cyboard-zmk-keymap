@@ -49,6 +49,12 @@ The left half also exposes the right half's battery level through an additional
 Bluetooth Battery Service. Both halves must be on and connected. The normal
 Bluetooth battery percentage is the left half's level; reading both values may
 require a BLE inspection app because host support for multiple batteries varies.
+For a desktop display of both levels, try
+[ZMK Battery Center](https://github.com/kot149/zmk-battery-center) on macOS or
+Windows. Connect the keyboard to that computer over Bluetooth; USB alone does
+not expose these Bluetooth Battery Services. Battery reporting and the Battery
+Service are explicitly enabled for both halves in `config/imprint.conf`, with
+right-half fetching and proxying enabled in `config/imprint_left.conf`.
 
 Switching Bluetooth profiles briefly colors the entire keyboard for 1.5 seconds:
 
