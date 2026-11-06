@@ -79,7 +79,7 @@ Colors follow the layer IDs even if you rename or reorder layers in Studio.
 Color changes require a firmware rebuild; normal key
 changes can still be made in Studio. The Custom layer uses `&none`, so its empty
 keys do not fall through to Qwerty. The left trackball keeps its scrolling setup,
-with its scale reduced from 1/3 to 1/6 for half the previous sensitivity; the right
+with its scale reduced again from 1/6 to 1/12 for half the previous sensitivity; the right
 trackball's pointer sensitivity is unchanged.
 
 Flash both halves from the same successful GitHub Actions build. If the keyboard

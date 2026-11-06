@@ -74,7 +74,7 @@ class ImprintKeymapTest(unittest.TestCase):
     def test_left_trackball_scroll_sensitivity_is_halved(self):
         keymap = (ROOT / "config/imprint.keymap").read_text()
         listener = keymap.split("&trackball_central_listener", 1)[1]
-        self.assertIn("<&zip_xy_scaler 1 6>", listener)
+        self.assertIn("<&zip_xy_scaler 1 12>", listener)
         self.assertIn("<&zip_xy_to_scroll_mapper>", listener)
         self.assertIn("<&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>", listener)
 
