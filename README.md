@@ -67,20 +67,29 @@ Switching Bluetooth profiles briefly colors the entire keyboard for 1.5 seconds:
 | 5 | 4 | White |
 
 These colors are separate from the red, blue, and green layer colors. After the
-flash, lighting returns to the currently active layer. Rapid profile changes
+flash, lighting turns off. Rapid profile changes
 restart the timer with the latest profile's color. Layer changes during a flash
-take effect when the flash ends. Reconnecting to the same host does not trigger
+show the new layer color for 600 ms when the profile flash ends, then turn off.
+Reconnecting to the same host does not trigger
 or extend the flash. The saved Bluetooth profile loads without flashing at boot.
 The indication is sent to both halves through the existing split RGB behaviors;
 it shows the selected profile, not confirmation of a connected host.
 
-The firmware sets solid RGB colors with brightness setting 25. It updates the color on
-layer changes, after saved settings load at startup, and when it receives the
-right half's battery report. Each half turns its lighting off after 30 seconds
-without input. ZMK restores the previous on/off state when activity resumes.
-Color updates and profile flashes preserve that state, so they cannot turn
-idle or manually disabled lighting back on. Lighting starts on again after a
-restart or deep-sleep wake, even if idle shutoff saved an off state.
+The firmware flashes the new layer's solid RGB color once for 600 ms at brightness
+setting 25, then explicitly turns RGB off on both halves, even while typing.
+Rapid layer changes restart the pulse with the final layer's color. Lighting
+starts off after a restart or deep-sleep wake, overriding any saved RGB on state.
+Bluetooth profile changes also explicitly turn lighting on for their indication.
+A manual RGB-off command does not disable future layer or profile indications.
+Right-half battery reports resynchronize the current indication or off state
+after reconnection without starting or extending a flash. Both halves must be
+connected to receive the same commands; if the split disconnects during a pulse,
+the right half may miss the off command. The existing 30-second idle shutoff
+remains a fallback; check reconnect and idle/wake behavior on hardware.
+This removes continuous RGB consumption during typing. Further savings can come
+from reducing `CONFIG_ZMK_RGB_UNDERGLOW_BRT_START` below 25 or shortening
+`LAYER_FLASH_MS` in `src/layer_colors.c`. Actual runtime depends on the batteries,
+trackballs, radio activity, and how frequently you switch layers.
 Colors follow the layer IDs even if you rename or reorder layers in Studio.
 Color changes require a firmware rebuild; normal key
 changes can still be made in Studio. The Custom layer uses `&none`, so its empty
@@ -97,16 +106,18 @@ After flashing, check that each tap cycles red/Qwerty, blue/Colemak-DH,
 green/Custom, and back to red/Qwerty. Check that Custom's letters produce no key
 output, but its shared controls and cycle keys still work. Restart the keyboard from blue
 or green and check that it returns to red/Qwerty. Also restart the right half
-while Colemak-DH or Custom is active and check its color after it reconnects.
+while Colemak-DH or Custom is active and check that it stays dark after reconnecting.
 Unlock Studio with the existing A-position + F-position hold combo to configure
 Custom. The combo uses physical positions and also works on the blank layer.
 
-With both halves on battery, leave them untouched for at least 30 seconds and
-check that both lights go out. Press a key on each half to check that its light
-returns with the current layer color. Turn RGB off manually and check that layer
-changes, profile changes, and right-half battery updates do not turn it back on.
+With both halves on battery, switch layers and check that each color lasts about
+600 ms, then goes dark even while you continue typing. Ordinary keys and battery
+reports must not trigger a new pulse. Test rapid layer changes and verify that
+the final color is correct and both halves turn off. Test a split disconnect
+during a pulse and reconnect, including idle and subsequent input on each half.
 After at least 15 minutes without input, press a key on each half and check that
-lighting returns after waking from deep sleep. Use a BLE inspection app to read
+lighting stays off after waking from deep sleep until a layer or profile change.
+Use a BLE inspection app to read
 the additional Battery Service while both halves are connected.
 
 After updating this keymap, preserve any Studio customizations before using
@@ -115,7 +126,7 @@ assign Bluetooth → Next Profile to the innermost lower-left thumb key and Move
 to Layer → 1 / 2 / 0 to the middle lower-left thumb key on Qwerty / Colemak-DH /
 Custom, respectively, directly in Studio. Test all five profiles and wraparound on every layer,
 including Custom, and confirm the layer-cycle key still works independently.
-Check each profile's flash color and return to the layer color after 1.5 seconds.
+Check each profile's flash color and shutoff after 1.5 seconds.
 Also test quick repeated presses, changing layers during the flash, and a host
 reconnect without a new profile selection. The flash works over USB even though
 USB remains the preferred output. No Studio reset is needed for this lighting
@@ -166,7 +177,8 @@ The flash timing and lighting callback tests compile C code, so they need a host
 If one is unavailable, run the same command with `uv run --with ziglang` instead
 of `uv run`.
 The lighting callback test compiles both half roles with mocked Zephyr and ZMK
-boundaries; it checks startup lighting and that color updates do not force RGB on.
+boundaries; it checks startup shutoff, timed layer and profile pulses, rapid layer
+changes, and battery/reconnect events that do not extend indications.
 These host tests do not verify hardware sleep or Bluetooth battery reporting.
 
 > **Already have a copy of this template from before July 2026?** The board and

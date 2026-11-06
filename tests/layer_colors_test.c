@@ -17,6 +17,7 @@
 #define RGB_EFS_CMD 1
 #define RGB_COLOR_HSB_CMD 2
 #define RGB_ON_CMD 3
+#define RGB_OFF_CMD 4
 #define RGB_COLOR_HSB_VAL(h, s, b) (((h) << 16) | ((s) << 8) | (b))
 #define ZMK_EV_EVENT_BUBBLE 0
 #define K_NO_WAIT 0
@@ -50,14 +51,18 @@ struct zmk_behavior_binding {
 };
 
 static int power_on_calls;
-int zmk_rgb_underglow_on(void) {
-    power_on_calls++;
+static int power_off_calls;
+static bool powered;
+int zmk_rgb_underglow_off(void) {
+    power_off_calls++;
+    powered = false;
     return 0;
 }
 
 int64_t now;
 uint8_t active_layer;
 struct k_work_delayable *pending_work;
+int64_t pending_at;
 uint32_t color;
 int effect;
 
@@ -77,9 +82,14 @@ as_zmk_ble_active_profile_changed(const zmk_event_t *event) {
 }
 int k_work_reschedule(struct k_work_delayable *work, int64_t delay) {
     pending_work = work;
+    pending_at = now + delay;
     return 0;
 }
 int k_work_schedule(struct k_work_delayable *work, int64_t delay) {
+    if (!pending_work) {
+        pending_work = work;
+        pending_at = now + delay;
+    }
     return 0;
 }
 int zmk_behavior_invoke_binding(struct zmk_behavior_binding *binding,
@@ -94,6 +104,11 @@ int zmk_behavior_invoke_binding(struct zmk_behavior_binding *binding,
         break;
     case RGB_ON_CMD:
         power_on_calls++;
+        powered = true;
+        break;
+    case RGB_OFF_CMD:
+        power_off_calls++;
+        powered = false;
         break;
     default:
         assert(false);
@@ -104,6 +119,7 @@ int zmk_behavior_invoke_binding(struct zmk_behavior_binding *binding,
 void run_pending_work(void) {
     assert(pending_work);
     struct k_work_delayable *work = pending_work;
+    now = pending_at;
     pending_work = NULL;
     work->handler(NULL);
 }
@@ -111,39 +127,93 @@ void run_pending_work(void) {
 #include "../src/layer_colors.c"
 
 int main(void) {
-    // Idle saves RGB off. Boot and deep-sleep wake must restore startup lighting.
+    // Boot and deep-sleep wake override saved lighting without a flash.
+    powered = true;
     assert(settings_commit() == 0);
 #if CONFIG_ZMK_SPLIT_ROLE_CENTRAL
     run_pending_work();
-    assert(color == RGB_COLOR_HSB_VAL(0, 100, 25));
+    assert(!powered);
 #endif
-    assert(power_on_calls == 1);
+    assert(power_on_calls == 0);
+    assert(power_off_calls >= 1);
+    assert(!powered);
 
 #if CONFIG_ZMK_SPLIT_ROLE_CENTRAL
     power_on_calls = 0;
-    // Layer and battery events have no profile payload. While lighting is off,
-    // both must still update the color without issuing a power command.
+    // A battery report on an unchanged layer must leave the lights off.
     zmk_event_t event = {0};
+    layer_colors_listener(&event);
+    run_pending_work();
+    assert(!powered && !pending_work);
+
+    // A layer switch lights both halves, then expires without more input.
     active_layer = 1;
     layer_colors_listener(&event);
     run_pending_work();
     assert(color == RGB_COLOR_HSB_VAL(240, 100, 25));
     assert(effect == 0);
-    assert(power_on_calls == 0);
+    assert(powered && pending_at == now + 600);
+    now = 200;
+    layer_colors_listener(&event);
+    run_pending_work();
+    assert(powered && pending_at == 600);
+    run_pending_work();
+    assert(!powered && !pending_work);
 
-    // Profile feedback and its delayed return also leave lighting power alone.
-    now = 100;
+    // Profile feedback explicitly turns on, and a reconnect cannot extend it.
+    now = 1000;
     event = (zmk_event_t){.is_profile = true, .profile = {.index = 1}};
     layer_colors_listener(&event);
     run_pending_work();
     assert(color == RGB_COLOR_HSB_VAL(300, 100, 25));
-    assert(power_on_calls == 0);
+    assert(powered && pending_at == 2500);
+    now = 1100;
+    layer_colors_listener(&event);
+    assert(pending_at == 2500);
 
+    // A layer change during profile feedback is shown after it, for 600 ms.
+    now = 1200;
     active_layer = 2;
-    now = 1600;
-    layer_color_work.handler(NULL);
+    event = (zmk_event_t){0};
+    layer_colors_listener(&event);
+    run_pending_work();
+    assert(color == RGB_COLOR_HSB_VAL(300, 100, 25));
+    assert(pending_at == 2500);
+    run_pending_work();
     assert(color == RGB_COLOR_HSB_VAL(120, 100, 25));
-    assert(power_on_calls == 0);
+    assert(powered && pending_at == 3100);
+    run_pending_work();
+    assert(!powered && !pending_work);
+
+    // Rapid switches use the final layer and restart its deadline.
+    now = 4000;
+    active_layer = 0;
+    layer_colors_listener(&event);
+    run_pending_work();
+    now = 4300;
+    active_layer = 1;
+    layer_colors_listener(&event);
+    active_layer = 2;
+    layer_colors_listener(&event);
+    run_pending_work();
+    assert(color == RGB_COLOR_HSB_VAL(120, 100, 25));
+    assert(powered && pending_at == 4900);
+    run_pending_work();
+    assert(!powered);
+
+    // Studio can remove all active layers; this must still shut lighting off.
+    active_layer = ZMK_KEYMAP_LAYER_ID_INVAL;
+    layer_colors_listener(&event);
+    run_pending_work();
+    assert(!powered && !pending_work);
+
+    // A profile flash by itself also ends off, with no layer pulse afterwards.
+    event = (zmk_event_t){.is_profile = true, .profile = {.index = 2}};
+    layer_colors_listener(&event);
+    run_pending_work();
+    assert(powered && color == RGB_COLOR_HSB_VAL(60, 100, 25));
+    run_pending_work();
+    assert(!powered && !pending_work);
 #endif
     return 0;
 }

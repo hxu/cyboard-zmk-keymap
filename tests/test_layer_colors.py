@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class LayerColorsTest(unittest.TestCase):
-    def test_startup_and_color_updates_on_both_halves(self):
+    def test_startup_shutoff_and_timed_indications(self):
         compiler = shutil.which("cc")
         if compiler:
             command = [compiler]
