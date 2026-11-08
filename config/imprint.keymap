@@ -16,12 +16,12 @@
             bindings = <
 &kp ESC    &kp F1  &kp F2    &kp F3    &kp F4    &kp F5              &kp F6     &kp F7    &kp F8     &kp F9    &kp F10   &kp F11
 &kp GRAVE  &kp N1  &kp N2    &kp N3    &kp N4    &kp N5              &kp N6     &kp N7    &kp N8     &kp N9    &kp N0    &kp MINUS
-&kp TAB    &kp Q   &kp W     &kp E     &kp R     &kp T               &kp Y      &kp U     &kp I      &kp O     &kp P     &kp BSLH
+&kp TAB    &kp Q   &kp W     &kp E     &kp R     &kp T               &kp Y      &kp U     &kp I      &kp O     &kp P     &kp EQUAL
 &kp CAPS   &kp A   &kp S     &kp D     &kp F     &kp G               &kp H      &kp J     &kp K      &kp L     &kp SEMI  &kp SQT
 &kp LSHFT  &kp Z   &kp X     &kp C     &kp V     &kp B               &kp N      &kp M     &kp COMMA  &kp DOT   &kp FSLH  &kp RSHFT
-&kp LCTRL  &kp LALT  &kp DOWN  &kp UP  &none                         &kp EQUAL  &kp LEFT  &kp RIGHT  &kp LBKT  &kp RBKT
-                                       &kp LGUI  &kp DEL  &none     &kp HOME  &mkp LCLK  &mkp RCLK
-                                       &kp RET   &to 1    &bt BT_NXT  &kp END   &kp BSPC  &kp SPACE
+&kp LCTRL  &kp LALT  &kp DOWN  &kp UP  &kp BSLH                      &kp BSPC   &kp LEFT  &kp RIGHT  &kp LBKT  &kp RBKT
+                                       &kp LGUI  &kp DEL  &to 1     &kp PG_UP  &mkp LCLK  &mkp RCLK
+                                       &kp SPACE &kp RET  &bt BT_NXT  &kp PG_DN  &kp RET  &kp SPACE
             >;
         };
 
@@ -30,12 +30,12 @@
             bindings = <
 &kp ESC    &kp F1  &kp F2    &kp F3    &kp F4    &kp F5              &kp F6     &kp F7    &kp F8     &kp F9    &kp F10   &kp F11
 &kp GRAVE  &kp N1  &kp N2    &kp N3    &kp N4    &kp N5              &kp N6     &kp N7    &kp N8     &kp N9    &kp N0    &kp MINUS
-&kp TAB    &kp Q   &kp W     &kp F     &kp P     &kp B               &kp J      &kp L     &kp U      &kp Y     &kp SEMI  &kp BSLH
+&kp TAB    &kp Q   &kp W     &kp F     &kp P     &kp B               &kp J      &kp L     &kp U      &kp Y     &kp SEMI  &kp EQUAL
 &kp CAPS   &kp A   &kp R     &kp S     &kp T     &kp G               &kp M      &kp N     &kp E      &kp I     &kp O     &kp SQT
 &kp LSHFT  &kp Z   &kp X     &kp C     &kp D     &kp V               &kp K      &kp H     &kp COMMA  &kp DOT   &kp FSLH  &kp RSHFT
-&kp LCTRL  &kp LALT  &kp DOWN  &kp UP  &none                         &kp EQUAL  &kp LEFT  &kp RIGHT  &kp LBKT  &kp RBKT
+&kp LCTRL  &kp LALT  &kp DOWN  &kp UP  &kp BSLH                      &kp BSPC   &kp LEFT  &kp RIGHT  &kp LBKT  &kp RBKT
+                                       &trans  &trans  &to 2      &trans  &trans  &trans
                                        &trans  &trans  &trans     &trans  &trans  &trans
-                                       &trans  &to 2   &trans     &trans  &trans  &trans
             >;
         };
 
@@ -44,12 +44,12 @@
             bindings = <
 &kp ESC    &kp F1  &kp F2  &kp F3  &kp F4  &kp F5              &kp F6  &kp F7  &kp F8  &kp F9  &kp F10  &kp F11
 &kp GRAVE  &kp N1  &kp N2  &kp N3  &kp N4  &kp N5              &kp N6  &kp N7  &kp N8  &kp N9  &kp N0   &kp MINUS
-&kp TAB    &none   &none   &none   &none   &none               &none   &none   &none   &none   &none    &kp BSLH
+&kp TAB    &none   &none   &none   &none   &none               &none   &none   &none   &none   &none    &kp EQUAL
 &kp CAPS   &none   &none   &none   &none   &none               &none   &none   &none   &none   &kp SEMI &kp SQT
 &kp LSHFT  &none   &none   &none   &none   &none               &none   &none   &kp COMMA  &kp DOT  &kp FSLH  &kp RSHFT
-&kp LCTRL  &kp LALT  &kp DOWN  &kp UP  &none                   &kp EQUAL  &kp LEFT  &kp RIGHT  &kp LBKT  &kp RBKT
+&kp LCTRL  &kp LALT  &kp DOWN  &kp UP  &kp BSLH                &kp BSPC   &kp LEFT  &kp RIGHT  &kp LBKT  &kp RBKT
+                                  &trans  &trans  &to 0      &trans  &trans  &trans
                                   &trans  &trans  &trans     &trans  &trans  &trans
-                                  &trans  &to 0   &trans     &trans  &trans  &trans
             >;
         };
     };

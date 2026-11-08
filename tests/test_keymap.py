@@ -36,7 +36,7 @@ class ImprintKeymapTest(unittest.TestCase):
             self.layers[0][24:60],
             [
                 "&kp TAB", "&kp Q", "&kp W", "&kp E", "&kp R", "&kp T",
-                "&kp Y", "&kp U", "&kp I", "&kp O", "&kp P", "&kp BSLH",
+                "&kp Y", "&kp U", "&kp I", "&kp O", "&kp P", "&kp EQUAL",
                 "&kp CAPS", "&kp A", "&kp S", "&kp D", "&kp F", "&kp G",
                 "&kp H", "&kp J", "&kp K", "&kp L", "&kp SEMI", "&kp SQT",
                 "&kp LSHFT", "&kp Z", "&kp X", "&kp C", "&kp V", "&kp B",
@@ -49,7 +49,7 @@ class ImprintKeymapTest(unittest.TestCase):
             self.layers[1][24:60],
             [
                 "&kp TAB", "&kp Q", "&kp W", "&kp F", "&kp P", "&kp B",
-                "&kp J", "&kp L", "&kp U", "&kp Y", "&kp SEMI", "&kp BSLH",
+                "&kp J", "&kp L", "&kp U", "&kp Y", "&kp SEMI", "&kp EQUAL",
                 "&kp CAPS", "&kp A", "&kp R", "&kp S", "&kp T", "&kp G",
                 "&kp M", "&kp N", "&kp E", "&kp I", "&kp O", "&kp SQT",
                 "&kp LSHFT", "&kp Z", "&kp X", "&kp C", "&kp D", "&kp V",
@@ -63,7 +63,7 @@ class ImprintKeymapTest(unittest.TestCase):
         for position in range(82):
             if position in letter_positions:
                 self.assertEqual(custom[position], "&none")
-            elif position != 77:  # Each layer's cycle key has its own target.
+            elif position != 72:  # Each layer's cycle key has its own target.
                 self.assertEqual(custom[position], self.layers[0][position])
 
     def test_confirmed_controls_on_every_layer(self):
@@ -72,13 +72,14 @@ class ImprintKeymapTest(unittest.TestCase):
             self.assertEqual([layer[i] for i in [0, 12, 24, 36, 48]],
                              ["&kp ESC", "&kp GRAVE", "&kp TAB", "&kp CAPS", "&kp LSHFT"])
             self.assertEqual(layer[60:70], [
-                "&kp LCTRL", "&kp LALT", "&kp DOWN", "&kp UP", "&none",
-                "&kp EQUAL", "&kp LEFT", "&kp RIGHT", "&kp LBKT", "&kp RBKT",
+                "&kp LCTRL", "&kp LALT", "&kp DOWN", "&kp UP", "&kp BSLH",
+                "&kp BSPC", "&kp LEFT", "&kp RIGHT", "&kp LBKT", "&kp RBKT",
             ])
-            self.assertEqual(layer[70:77], [
-                "&kp LGUI", "&kp DEL", "&none", "&kp HOME", "&mkp LCLK", "&mkp RCLK", "&kp RET",
+            self.assertEqual(layer[70:72] + layer[73:82], [
+                "&kp LGUI", "&kp DEL", "&kp PG_UP", "&mkp LCLK", "&mkp RCLK",
+                "&kp SPACE", "&kp RET", "&bt BT_NXT", "&kp PG_DN", "&kp RET", "&kp SPACE",
             ])
-            self.assertEqual(layer[79:82], ["&kp END", "&kp BSPC", "&kp SPACE"])
+            self.assertEqual(layer[35], "&kp EQUAL")
 
     def test_left_trackball_scroll_sensitivity_is_halved(self):
         keymap = (ROOT / "config/imprint.keymap").read_text()
@@ -87,7 +88,7 @@ class ImprintKeymapTest(unittest.TestCase):
         self.assertIn("<&zip_xy_to_scroll_mapper>", listener)
         self.assertIn("<&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>", listener)
 
-    def test_bluetooth_cycle_is_immediately_right_of_layer_cycle_on_every_layer(self):
+    def test_bluetooth_cycle_is_lower_left_innermost_thumb_on_every_layer(self):
         self.assertEqual(
             [self.effective_layer(layer)[78] for layer in self.layers],
             ["&bt BT_NXT"] * 3,
@@ -101,10 +102,10 @@ class ImprintKeymapTest(unittest.TestCase):
         self.assertNotIn("CONFIG_BT_MAX_CONN", shared)
         self.assertNotIn("CONFIG_BT_MAX_PAIRED", shared)
 
-    def test_left_middle_thumb_cycles_and_other_thumbs_do_not_change_layers(self):
-        self.assertEqual([layer[77] for layer in self.layers], ["&to 1", "&to 2", "&to 0"])
+    def test_upper_left_innermost_thumb_cycles_and_other_thumbs_inherit(self):
+        self.assertEqual([layer[72] for layer in self.layers], ["&to 1", "&to 2", "&to 0"])
         for layer in self.layers[1:]:
-            self.assertEqual(layer[70:77] + layer[78:82], ["&trans"] * 11)
+            self.assertEqual(layer[70:72] + layer[73:82], ["&trans"] * 11)
         for layer in self.layers:
             self.assertFalse(any(binding.startswith(("&mo ", "&tog ")) for binding in layer))
 

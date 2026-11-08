@@ -17,27 +17,24 @@ All three layers share the following controls (each row reads left to right):
 | Area | Bindings |
 | --- | --- |
 | Left outer column, top to bottom | Esc, grave/tilde, Tab, Caps Lock, Shift, Ctrl |
-| Left bottom row | Ctrl, Alt/Option, Down, Up, unassigned |
-| Right bottom row | Equals, Left, Right, Left bracket, Right bracket |
-| Left upper thumb arc | Command/GUI, Delete (forward), unassigned Function key |
-| Left lower thumb arc | Enter, layer cycle, Bluetooth cycle |
-| Right upper thumb arc | Home, left mouse button, right mouse button |
-| Right lower thumb arc | End, Backspace, Space |
+| Left bottom row | Ctrl, Alt/Option, Down, Up, Backslash/bar |
+| Right bottom row | Backspace, Left, Right, Left bracket, Right bracket |
+| Right outer column, directly below Minus | Equals/plus |
+| Left upper thumb arc | Command/GUI, Delete (forward), layer cycle |
+| Left lower thumb arc | Space, Enter, Bluetooth cycle |
+| Right upper thumb arc | Page Up, left mouse button, right mouse button |
+| Right lower thumb arc | Page Down, Enter, Space |
 
 Custom keeps its 26 letter positions unassigned, with the Qwerty layer's numbers,
 function keys, punctuation, modifiers, navigation, and thumb controls. The
 thumb controls are defined on Qwerty (layer 0) and inherited through `&trans`
 on Colemak-DH and Custom, except for the layer-cycle key described below.
-The Function thumb key inherits `&none` from Qwerty, so it does nothing.
-The last key of the left bottom row uses `&none` on all layers.
-
-Tap the middle key on the lower left thumb arc to cycle through these layers.
-This is the former `&mo 1` key, immediately after Enter in the last keymap row
-(binding position 77, counting from zero).
+Tap the innermost key on the upper left thumb arc to cycle through these layers
+(binding position 72, counting from zero).
 Its bindings are `&to 1`, `&to 2`, and `&to 0`. Keep these bindings when editing
 the layers in Studio, so you can always leave the Custom layer.
 
-The key immediately to its right (the innermost key on the lower left thumb arc,
+The key below it (the innermost key on the lower left thumb arc,
 binding position 78, counting from zero) cycles Bluetooth profiles with
 `&bt BT_NXT` on Qwerty, inherited on the other two layers. It cycles profiles
 1 → 2 → 3 → 4 → 5 → 1 (ZMK IDs 0–4). An unused profile advertises for pairing; a paired profile
@@ -125,7 +122,7 @@ the additional Battery Service while both halves are connected.
 After updating this keymap, preserve any Studio customizations before using
 **Restore Stock Settings** to load the new Bluetooth binding. Alternatively,
 assign Bluetooth → Next Profile to the innermost lower-left thumb key and Move
-to Layer → 1 / 2 / 0 to the middle lower-left thumb key on Qwerty / Colemak-DH /
+to Layer → 1 / 2 / 0 to the innermost upper-left thumb key on Qwerty / Colemak-DH /
 Custom, respectively, directly in Studio. Test all five profiles and wraparound on every layer,
 including Custom, and confirm the layer-cycle key still works independently.
 Check each profile's flash color and shutoff after 1.5 seconds.
@@ -135,7 +132,7 @@ USB remains the preferred output. No Studio reset is needed for this lighting
 update if your saved keymap already has the Bluetooth and layer cycle bindings.
 For the revised keycap layout, preserve your Studio edits and use Restore Stock
 Settings after flashing, or apply the new bindings to every layer in Studio.
-Verify forward Delete versus Backspace, the unassigned keys, both mouse buttons
+Verify forward Delete versus Backspace, Page Up/Down, both mouse buttons
 (including click-and-drag), the arrow keys, and the slower left-ball scrolling.
 
 ## Cyboard trackball configuration extension
