@@ -26,8 +26,10 @@ All three layers share the following controls (each row reads left to right):
 
 Custom keeps its 26 letter positions unassigned, with the Qwerty layer's numbers,
 function keys, punctuation, modifiers, navigation, and thumb controls. The
-Function thumb key and the last key of the left bottom row use `&none` on all
-layers, so neither falls through to a lower layer.
+thumb controls are defined on Qwerty (layer 0) and inherited through `&trans`
+on Colemak-DH and Custom, except for the layer-cycle key described below.
+The Function thumb key inherits `&none` from Qwerty, so it does nothing.
+The last key of the left bottom row uses `&none` on all layers.
 
 Tap the middle key on the lower left thumb arc to cycle through these layers.
 This is the former `&mo 1` key, immediately after `LGUI` in the last keymap row
@@ -37,8 +39,8 @@ the layers in Studio, so you can always leave the Custom layer.
 
 The key immediately to its right (the innermost key on the lower left thumb arc,
 binding position 78, counting from zero) cycles Bluetooth profiles with
-`&bt BT_NXT` on all three layers. It cycles profiles 1 → 2 → 3 → 4 → 5 → 1
-(ZMK IDs 0–4). An unused profile advertises for pairing; a paired profile
+`&bt BT_NXT` on Qwerty, inherited on the other two layers. It cycles profiles
+1 → 2 → 3 → 4 → 5 → 1 (ZMK IDs 0–4). An unused profile advertises for pairing; a paired profile
 selects its host. The left-half config explicitly reserves six connections
 and bonds: five hosts plus the right half. Five is the configured profile
 count, not a hardware maximum; increasing it requires a rebuild and memory

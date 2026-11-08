@@ -18,6 +18,13 @@ class ImprintKeymapTest(unittest.TestCase):
             for block in re.findall(r"bindings\s*=\s*<(.*?)>;", keymap, re.S)
         ]
 
+    def effective_layer(self, layer):
+        # &to leaves only the selected layer and base layer active.
+        return [
+            base if binding == "&trans" else binding
+            for base, binding in zip(self.layers[0], layer)
+        ]
+
     def test_three_full_row_layers(self):
         layout = json.loads((ROOT / "config/info.json").read_text())
         self.assertEqual(len(layout["layouts"]["Imprint"]["layout"]), 82)
@@ -52,14 +59,16 @@ class ImprintKeymapTest(unittest.TestCase):
 
     def test_custom_letters_stay_blank_and_controls_match_qwerty(self):
         letter_positions = set(range(25, 35)) | set(range(37, 46)) | set(range(49, 56))
+        custom = self.effective_layer(self.layers[2])
         for position in range(82):
             if position in letter_positions:
-                self.assertEqual(self.layers[2][position], "&none")
+                self.assertEqual(custom[position], "&none")
             elif position != 77:  # Each layer's cycle key has its own target.
-                self.assertEqual(self.layers[2][position], self.layers[0][position])
+                self.assertEqual(custom[position], self.layers[0][position])
 
     def test_confirmed_controls_on_every_layer(self):
         for layer in self.layers:
+            layer = self.effective_layer(layer)
             self.assertEqual([layer[i] for i in [0, 12, 24, 36, 48]],
                              ["&kp ESC", "&kp GRAVE", "&kp TAB", "&kp CAPS", "&kp LSHFT"])
             self.assertEqual(layer[60:70], [
@@ -79,7 +88,10 @@ class ImprintKeymapTest(unittest.TestCase):
         self.assertIn("<&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>", listener)
 
     def test_bluetooth_cycle_is_immediately_right_of_layer_cycle_on_every_layer(self):
-        self.assertEqual([layer[78] for layer in self.layers], ["&bt BT_NXT"] * 3)
+        self.assertEqual(
+            [self.effective_layer(layer)[78] for layer in self.layers],
+            ["&bt BT_NXT"] * 3,
+        )
 
     def test_five_host_profiles_reserve_a_slot_for_the_peripheral(self):
         central = (ROOT / "config/imprint_left.conf").read_text()
@@ -91,6 +103,8 @@ class ImprintKeymapTest(unittest.TestCase):
 
     def test_left_middle_thumb_cycles_and_other_thumbs_do_not_change_layers(self):
         self.assertEqual([layer[77] for layer in self.layers], ["&to 1", "&to 2", "&to 0"])
+        for layer in self.layers[1:]:
+            self.assertEqual(layer[70:77] + layer[78:82], ["&trans"] * 11)
         for layer in self.layers:
             self.assertFalse(any(binding.startswith(("&mo ", "&tog ")) for binding in layer))
 

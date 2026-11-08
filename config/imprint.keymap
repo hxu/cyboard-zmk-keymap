@@ -34,8 +34,8 @@
 &kp CAPS   &kp A   &kp R     &kp S     &kp T     &kp G               &kp M      &kp N     &kp E      &kp I     &kp O     &kp SQT
 &kp LSHFT  &kp Z   &kp X     &kp C     &kp D     &kp V               &kp K      &kp H     &kp COMMA  &kp DOT   &kp FSLH  &kp RSHFT
 &kp LCTRL  &kp LALT  &kp DOWN  &kp UP  &none                         &kp EQUAL  &kp LEFT  &kp RIGHT  &kp LBKT  &kp RBKT
-                                       &kp RET   &kp DEL  &none     &kp HOME  &kp BSPC  &kp SPACE
-                                       &kp LGUI  &to 2    &bt BT_NXT  &kp END   &mkp LCLK  &mkp RCLK
+                                       &trans  &trans  &trans     &trans  &trans  &trans
+                                       &trans  &to 2   &trans     &trans  &trans  &trans
             >;
         };
 
@@ -48,8 +48,8 @@
 &kp CAPS   &none   &none   &none   &none   &none               &none   &none   &none   &none   &kp SEMI &kp SQT
 &kp LSHFT  &none   &none   &none   &none   &none               &none   &none   &kp COMMA  &kp DOT  &kp FSLH  &kp RSHFT
 &kp LCTRL  &kp LALT  &kp DOWN  &kp UP  &none                   &kp EQUAL  &kp LEFT  &kp RIGHT  &kp LBKT  &kp RBKT
-                                  &kp RET   &kp DEL  &none     &kp HOME  &kp BSPC  &kp SPACE
-                                  &kp LGUI  &to 0    &bt BT_NXT  &kp END   &mkp LCLK  &mkp RCLK
+                                  &trans  &trans  &trans     &trans  &trans  &trans
+                                  &trans  &to 0   &trans     &trans  &trans  &trans
             >;
         };
     };
