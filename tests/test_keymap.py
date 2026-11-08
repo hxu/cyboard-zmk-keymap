@@ -76,9 +76,9 @@ class ImprintKeymapTest(unittest.TestCase):
                 "&kp EQUAL", "&kp LEFT", "&kp RIGHT", "&kp LBKT", "&kp RBKT",
             ])
             self.assertEqual(layer[70:77], [
-                "&kp RET", "&kp DEL", "&none", "&kp HOME", "&kp BSPC", "&kp SPACE", "&kp LGUI",
+                "&kp LGUI", "&kp DEL", "&none", "&kp HOME", "&mkp LCLK", "&mkp RCLK", "&kp RET",
             ])
-            self.assertEqual(layer[79:82], ["&kp END", "&mkp LCLK", "&mkp RCLK"])
+            self.assertEqual(layer[79:82], ["&kp END", "&kp BSPC", "&kp SPACE"])
 
     def test_left_trackball_scroll_sensitivity_is_halved(self):
         keymap = (ROOT / "config/imprint.keymap").read_text()

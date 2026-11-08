@@ -19,10 +19,10 @@ All three layers share the following controls (each row reads left to right):
 | Left outer column, top to bottom | Esc, grave/tilde, Tab, Caps Lock, Shift, Ctrl |
 | Left bottom row | Ctrl, Alt/Option, Down, Up, unassigned |
 | Right bottom row | Equals, Left, Right, Left bracket, Right bracket |
-| Left upper thumb arc | Enter, Delete (forward), unassigned Function key |
-| Left lower thumb arc | Command/GUI, layer cycle, Bluetooth cycle |
-| Right upper thumb arc | Home, Backspace, Space |
-| Right lower thumb arc | End, left mouse button, right mouse button |
+| Left upper thumb arc | Command/GUI, Delete (forward), unassigned Function key |
+| Left lower thumb arc | Enter, layer cycle, Bluetooth cycle |
+| Right upper thumb arc | Home, left mouse button, right mouse button |
+| Right lower thumb arc | End, Backspace, Space |
 
 Custom keeps its 26 letter positions unassigned, with the Qwerty layer's numbers,
 function keys, punctuation, modifiers, navigation, and thumb controls. The
@@ -32,7 +32,7 @@ The Function thumb key inherits `&none` from Qwerty, so it does nothing.
 The last key of the left bottom row uses `&none` on all layers.
 
 Tap the middle key on the lower left thumb arc to cycle through these layers.
-This is the former `&mo 1` key, immediately after `LGUI` in the last keymap row
+This is the former `&mo 1` key, immediately after Enter in the last keymap row
 (binding position 77, counting from zero).
 Its bindings are `&to 1`, `&to 2`, and `&to 0`. Keep these bindings when editing
 the layers in Studio, so you can always leave the Custom layer.
